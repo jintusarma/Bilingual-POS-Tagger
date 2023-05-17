@@ -6,8 +6,8 @@ class Dataset(models.Model):
     raw_sentence = models.CharField(max_length=1000,)
     tagged_sentence = models.CharField(max_length=1000)
     verified_sentence = models.CharField(max_length=1000)
-    is_default_tagged = models.BooleanField(default=False)
-    is_tagged = models.BooleanField(default=False)
+    is_default_tagged = models.BooleanField(default=False,verbose_name="Is Tagged By Admin")
+    is_tagged = models.BooleanField(default=False,verbose_name="Is Tagged By User")
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
