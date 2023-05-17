@@ -64,13 +64,21 @@
 							<tr>
 								
 								<th
+									class=" px-5 py-3 w-1/2 border-b-2 border-gray-200 bg-blue-900 text-center text-xs font-semibold text-gray-200 uppercase tracking-wider">
+									Raw Sentences
+								</th>
+								<th
+									class=" px-5 py-3 w-1/2 border-b-2 border-gray-200 bg-blue-900 text-center text-xs font-semibold text-gray-200 uppercase tracking-wider">
+									Tagged Sentences
+								</th>
+								{% comment %} <th
 									class=" px-5 py-3 w-8/12 border-b-2 border-gray-200 bg-blue-900 text-center text-xs font-semibold text-gray-200 uppercase tracking-wider">
 									Raw Sentences
 								</th>
 								<th
 									class=" px-5 py-3 w-8/12 border-b-2 border-gray-200 bg-blue-900 text-center text-xs font-semibold text-gray-200 uppercase tracking-wider">
 									Tagged Sentences
-								</th>
+								</th> {% endcomment %}
 								{% comment %} <th
 									class="px-5 py-3 w-4/12 border-b-2 border-gray-200 bg-black text-center text-xs font-semibold text-gray-200 uppercase tracking-wider">
 									View
@@ -83,10 +91,16 @@
                             {% for obj in venues %}
 							<tr class="bg-white hover:bg-cyan-50">
 								
-								<td class="px-5 py-4 w-8/12 border-b border-gray-200  text-sm text-center">
+								{% comment %} <td class="px-5 py-4 w-8/12 border-b border-gray-200  text-sm text-center">
 									<p class="text-gray-900 whitespace-no-wrap">{{obj.raw_sentence}}</p>
 								</td>
 								<td class="px-5 py-4 w-8/12 border-b border-gray-200  text-sm text-center">
+									<p class="text-gray-900 whitespace-no-wrap">{{obj.verified_sentence}}</p>
+								</td> {% endcomment %}
+								<td class="px-5 py-4 w-1/2 border-b border-gray-200  text-sm text-center">
+									<p class="text-gray-900 whitespace-no-wrap">{{obj.raw_sentence}}</p>
+								</td>
+								<td class="px-5 py-4 w-1/2 border-b border-gray-200  text-sm text-center">
 									<p class="text-gray-900 whitespace-no-wrap">{{obj.verified_sentence}}</p>
 								</td>
 								{% comment %} <td class="px-5 py-4 border-b border-gray-200 text-sm flex justify-center">
