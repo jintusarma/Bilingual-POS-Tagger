@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifier 1 Update</title>
+    {% load static %}
+    
+</head>
+
+<body>
+    
+   
+        
+        <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 ">Update Details
+        </h2>
+
+        <form action="" method="post" >
+            {% csrf_token %}
+       
+                
+                <textarea id="message" name="input_text" readonly>{{ver.raw_sentence}}</textarea>
+                {% if ver.tagged_sentence %}
+                <textarea id="message" name="input_text" readonly>{{ver.tagged_sentence}}</textarea>
+                {% endif %}
+       
+            
+                
+                
+                    {% comment %} <textarea id="message" name="verifier_output" placeholder="Enter the corrected text"></textarea> {% endcomment %}
+
+                    {% for word in words %}
+                    <input type="checkbox" name="word" value="{{ word }}" required> 
+                    <p class="ml-4">{{ word }}</p> 
+
+                    <select name="tag"
+                                    class="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 md:w-full "
+                                    required="required" id="integration_city_id">
+                                    <option value="">TAGS</option>
+                                    <option value="nn">NOUN</option>
+                                    <option value="nnp">PROPER NOUN</option>
+                                    <option value="pr">PRONOUN</option>
+                                    <option value="dm">Demonstrative</option>
+                                    <option value="v">VERB</option>
+                                    <option value="jj">ADJECTIVE</option>
+                                    <option value="pr">Adverb</option>
+                                    <option value="cc">Conjunction</option>
+                                    <!-- <option value="pr"></option>
+                                    <option value="pr"></option> -->
+                                </select>
+                    {% endfor %}
+           
+            
+                <button type="submit"><b>UPDATE</b></button>
+            
+        </form>
+    
+
+</body>
+
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document</title>
+</head>
+<body>
+    
+    
+    <div class="relative overflow-x-auto">
+        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Input Sentence
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Output Sentence
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Edit
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Delete
+                    </th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in outputs %}
+                <tr class="bg-white border-b ">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
+                        {{obj.input_text}}
+                    </th>
+                    <td class="px-6 py-4">
+                        {{obj.output_text}}
+                    </td>
+                    <td class="px-6 py-4">
+                        <a href="/update_verifier1/{{obj.id}}"> <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                            Edit
+                          </button> </a>
+                        {% comment %} <a href="{% url 'update-verifier1' obj.id %}"> <button class="bg-blue-400 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
+                            Edit
+                          </button> </a> {% endcomment %}
+                    </td>
+                    <td class="px-6 py-4">
+                        <a href="/delete/{{obj.id}}"> <button class="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded">
+                            Delete
+                          </button> </a>
+                        {% comment %} <a href="{% url 'update-verifier1' obj.id %}"> <button class="bg-blue-400 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
+                            Edit
+                          </button> </a> {% endcomment %}
+                    </td>
+                </tr>
+                
+                
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    
+    
+</body>
+</html>

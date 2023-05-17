@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        {% comment %} <input type="text" name="f_name" id="" placeholder="First Name"> <br>
+        <input type="text" name="l_name" id="" placeholder="Last Name"> <br> {% endcomment %}
+        {% comment %} <input type="text" name="username" id="" placeholder="Username"> <br> {% endcomment %}
+        <input type="text" name="email" id="" placeholder="Email id"> <br>
+        <input type="password" name="password1" id="" placeholder="Password"> <br>
+        {% comment %} <input type="password" name="password2" id="" placeholder="Confirm Password"> <br> {% endcomment %}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

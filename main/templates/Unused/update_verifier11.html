@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Verifier 1</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        Input
+        <input type="text" name="input_text" value="{{ver.input_text}}" readonly>
+        System Generated Output
+        <input type="text" name="output_text" value="{{ver.output_text}}" readonly>
+        Verifier 1 Input
+        <input type="text" name="verifier_output" id="" placeholder="Enter the corrected text" value="{{ver.output_text}}">
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
