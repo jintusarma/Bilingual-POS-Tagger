@@ -1,9 +1,12 @@
-from django.shortcuts import render,HttpResponse,redirect
+from django.shortcuts import render,redirect
 from accounts.models import *
 from .models import *
 from .utils import *
 from django.core.paginator import Paginator
 import csv
+import zipfile
+from django.http import HttpResponse
+from io import BytesIO
 # Create your views here.
 
 def home(request):
@@ -298,15 +301,82 @@ def export_to_csv(request):
         writer.writerow(item)
     return response
 
-def export_to_text(request):
-    response = HttpResponse(content_type='text/plain')
-    response['Content-Disposition'] = 'attachment; filename=sentences.txt'
 
+def export_to_text(request):
+    # Create a BytesIO object to hold the zip file in memory
+    buffer = BytesIO()
+    
     data = Dataset.objects.filter(is_verified = True)
-    list2 = []
+
+    file1 = ["Raw Sentences :\n"]
     
     for value in data:
-        list2.append(f'Raw Sentence : {value.raw_sentence}\nTagged Sentence : {value.verified_sentence}\n\n')
+        file1.append(f'{value.raw_sentence}\n')
+    file1 = ''.join(file1)
 
-    response.writelines(list2)
+
+    file2 = ["Tagged Sentences :\n"]
+    
+    for value in data:
+        file2.append(f'{value.verified_sentence}\n')
+    file2 = ''.join(file2)
+
+
+    # Create the zip file
+    with zipfile.ZipFile(buffer, 'w') as zip_file:
+        # Add the first text file to the zip
+        zip_file.writestr('Raw_Sentences.txt', file1)
+        # Add the second text file to the zip
+        zip_file.writestr('Tagged_Sentences.txt', file2)
+
+    # Seek to the beginning of the buffer
+    buffer.seek(0)
+    
+    # Create a response object with the appropriate content type and headers
+    response = HttpResponse(buffer, content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename="files.zip"'
+
     return response
+
+
+# Working but only 1 file
+# def export_to_text(request):
+#     response = HttpResponse(content_type='text/plain')
+#     response['Content-Disposition'] = 'attachment; filename=sentences.txt'
+
+#     data = Dataset.objects.filter(is_verified = True)
+#     list2 = []
+    
+#     for value in data:
+#         list2.append(f'Raw Sentence : {value.raw_sentence}\nTagged Sentence : {value.verified_sentence}\n\n')
+
+#     response.writelines(list2)
+#     return response
+
+
+# Download 2 text file but not working only 2nd file download
+# def export_to_text(request):
+#     response = HttpResponse(content_type='text/plain')
+#     response['Content-Disposition'] = 'attachment; filename=Raw_Sentences.txt'
+
+#     data = Dataset.objects.filter(is_verified = True)
+    
+#     file1 = []
+    
+#     for value in data:
+#         file1.append(f'Raw Sentence : {value.raw_sentence}\n')
+
+#     response.writelines(file1)
+
+#     # Add a newline to separate the two files
+#     response.write('\n')
+
+#     response['Content-Disposition'] = 'attachment; filename="Tagged_Sentences.txt"'
+#     file2 = []
+    
+#     for value in data:
+#         file2.append(f'Tagged Sentence : {value.verified_sentence}\n')
+
+#     response.writelines(file2)
+#     return response
+
