@@ -361,40 +361,60 @@ def batch_text_download(request):
         metadata_id = request.POST['metadata']
         metadata = MetaData.objects.get(pk=metadata_id)
         print(metadata_id,metadata)
+        action = request.POST['action']
 
-        # Create a BytesIO object to hold the zip file in memory
-        buffer = BytesIO()
-        
         data = Dataset.objects.filter(is_verified = True,metadata=metadata)
+        if action == "text":
+            # Create a BytesIO object to hold the zip file in memory
+            buffer = BytesIO()
+            
 
-        file1 = []
+            file1 = []
+            
+            for value in data:
+                file1.append(f'{value.raw_sentence}\n')
+            file1 = ''.join(file1)
+
+
+            file2 = []
+            
+            for value in data:
+                file2.append(f'{value.verified_sentence}\n')
+            file2 = ''.join(file2)
+
+            # Create the zip file
+            with zipfile.ZipFile(buffer, 'w') as zip_file:
+                # Add the first text file to the zip
+                zip_file.writestr('Raw_Sentences.txt', file1)
+                # Add the second text file to the zip
+                zip_file.writestr('Tagged_Sentences.txt', file2)
+
+            # Seek to the beginning of the buffer
+            buffer.seek(0)
+            
+            # Create a response object with the appropriate content type and headers
+            response = HttpResponse(buffer, content_type='application/zip')
+            response['Content-Disposition'] = 'attachment; filename="files.zip"'
+
+            return response
         
-        for value in data:
-            file1.append(f'{value.raw_sentence}\n')
-        file1 = ''.join(file1)
+        elif action == "csv":
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename=sentences.csv'
 
+            writer = csv.writer(response)
 
-        file2 = []
-        
-        for value in data:
-            file2.append(f'{value.verified_sentence}\n')
-        file2 = ''.join(file2)
+            # import dataset model
+            # sentences = Dataset.objects.filter(is_verified = True)
 
-        # Create the zip file
-        with zipfile.ZipFile(buffer, 'w') as zip_file:
-            # Add the first text file to the zip
-            zip_file.writestr('Raw_Sentences.txt', file1)
-            # Add the second text file to the zip
-            zip_file.writestr('Tagged_Sentences.txt', file2)
+            # add column headings
+            writer.writerow(['Raw Sentences','Tagged Sentences'])
+            filelds = data.values_list('raw_sentence','verified_sentence')
+            
+            for item in filelds:
+                writer.writerow(item)
+            return response
 
-        # Seek to the beginning of the buffer
-        buffer.seek(0)
-        
-        # Create a response object with the appropriate content type and headers
-        response = HttpResponse(buffer, content_type='application/zip')
-        response['Content-Disposition'] = 'attachment; filename="files.zip"'
-
-        return response
 
     metadata = MetaData.objects.all()
     return render(request,"batch_download/text_download.html",{'metadatas':metadata})
