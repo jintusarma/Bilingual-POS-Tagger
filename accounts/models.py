@@ -17,5 +17,8 @@ class Verifier(models.Model):
     verifier = models.ForeignKey(User, on_delete=models.CASCADE)
     # ver = models.ForeignKey(Profile, on_delete=models.CASCADE)
     verifier_type = models.CharField(max_length=20, choices=types, default= 'verifier1')
+
+    def __str__(self):
+        return self.verifier.username
     
     

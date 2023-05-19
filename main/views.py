@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.shortcuts import render,redirect
 from accounts.models import *
 from .models import *
@@ -28,6 +29,21 @@ def home(request):
 
     return render(request,'index.html',{'ver1':ver_list1,'ver2':ver_list2,'admin':ver_list3})
 
+
+def add_metadata(request):
+    ver_list = check_verifier_admin()
+    if request.user in ver_list:
+        if request.method == "POST":
+            batch = request.POST['batch']
+            domain = request.POST['domain']
+            language = request.POST['language']
+            MetaData.objects.create(language=language,domain=domain,name=batch)
+            return redirect(add_sentences)
+            
+        return render(request,"upload/metadata_upload.html")
+    return render(request,"404error.html",)
+
+
 def add_sentences(request):
     # ver = Verifier.objects.filter(verifier_type = 'admin')
     ver_list = check_verifier_admin()
@@ -39,14 +55,16 @@ def add_sentences(request):
         if request.method == "POST":
             file = request.FILES['files']
             action = request.POST['action']
+            metadata_id = request.POST['metadata']
+            metadata = MetaData.objects.get(pk=metadata_id)
             if file:
                 for line in file:
                     text= line.decode('utf-8').strip()
                     if action == 'nontag':
-                        sentence = Dataset.objects.create(raw_sentence=text)
+                        sentence = Dataset.objects.create(raw_sentence=text,metadata=metadata)
                     elif action == 'tag':
                         raw_text = sentence_form(text)
-                        sentence = Dataset.objects.create(raw_sentence= raw_text,tagged_sentence=text,is_default_tagged=True)
+                        sentence = Dataset.objects.create(raw_sentence= raw_text,tagged_sentence=text,is_default_tagged=True,metadata=metadata)
             # if action == 'nontag':
             #     return HttpResponse("Non Tag")
             # elif action == 'tag':
@@ -56,8 +74,8 @@ def add_sentences(request):
             #         text= line.decode('utf-8').strip()
             #         sentence = Dataset.objects.create(raw_sentence=text)
                 return render(request,"suceess.html")
-
-        return render(request,"search.html")
+        metadata = MetaData.objects.all()
+        return render(request,"search.html",{'metadatas':metadata})
     
     return render(request,"404error.html",)
 
@@ -338,45 +356,45 @@ def export_to_text(request):
 
     return response
 
+def batch_text_download(request):
+    if request.method == "POST":
+        metadata_id = request.POST['metadata']
+        metadata = MetaData.objects.get(pk=metadata_id)
+        print(metadata_id,metadata)
 
-# Working but only 1 file
-# def export_to_text(request):
-#     response = HttpResponse(content_type='text/plain')
-#     response['Content-Disposition'] = 'attachment; filename=sentences.txt'
+        # Create a BytesIO object to hold the zip file in memory
+        buffer = BytesIO()
+        
+        data = Dataset.objects.filter(is_verified = True,metadata=metadata)
 
-#     data = Dataset.objects.filter(is_verified = True)
-#     list2 = []
-    
-#     for value in data:
-#         list2.append(f'Raw Sentence : {value.raw_sentence}\nTagged Sentence : {value.verified_sentence}\n\n')
-
-#     response.writelines(list2)
-#     return response
+        file1 = []
+        
+        for value in data:
+            file1.append(f'{value.raw_sentence}\n')
+        file1 = ''.join(file1)
 
 
-# Download 2 text file but not working only 2nd file download
-# def export_to_text(request):
-#     response = HttpResponse(content_type='text/plain')
-#     response['Content-Disposition'] = 'attachment; filename=Raw_Sentences.txt'
+        file2 = []
+        
+        for value in data:
+            file2.append(f'{value.verified_sentence}\n')
+        file2 = ''.join(file2)
 
-#     data = Dataset.objects.filter(is_verified = True)
-    
-#     file1 = []
-    
-#     for value in data:
-#         file1.append(f'Raw Sentence : {value.raw_sentence}\n')
+        # Create the zip file
+        with zipfile.ZipFile(buffer, 'w') as zip_file:
+            # Add the first text file to the zip
+            zip_file.writestr('Raw_Sentences.txt', file1)
+            # Add the second text file to the zip
+            zip_file.writestr('Tagged_Sentences.txt', file2)
 
-#     response.writelines(file1)
+        # Seek to the beginning of the buffer
+        buffer.seek(0)
+        
+        # Create a response object with the appropriate content type and headers
+        response = HttpResponse(buffer, content_type='application/zip')
+        response['Content-Disposition'] = 'attachment; filename="files.zip"'
 
-#     # Add a newline to separate the two files
-#     response.write('\n')
+        return response
 
-#     response['Content-Disposition'] = 'attachment; filename="Tagged_Sentences.txt"'
-#     file2 = []
-    
-#     for value in data:
-#         file2.append(f'Tagged Sentence : {value.verified_sentence}\n')
-
-#     response.writelines(file2)
-#     return response
-
+    metadata = MetaData.objects.all()
+    return render(request,"batch_download/text_download.html",{'metadatas':metadata})

@@ -5,3 +5,4 @@ from .models import *
 admin.site.register(Dataset)
 admin.site.register(TaggerDetails)
 admin.site.register(VerfierDetails)
+admin.site.register(MetaData)

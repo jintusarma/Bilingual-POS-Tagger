@@ -3,6 +3,7 @@ from .views import *
 
 urlpatterns = [
     path('',home, name="home"),
+    path('add_metadata/',add_metadata, name="add_metadata"),
     path('add_sentences/',add_sentences, name="add_sentences"),
     path('sentences/',raw_sentences, name="raw-sentences"),
     path('edit_sentences/<int:id>/',edit_raw_sentences, name="edit-raw-sentences"),
@@ -15,4 +16,5 @@ urlpatterns = [
     path('verified_sentences/',list_verified_sentences, name="verified-sentences"),
     path('export_to_csv/',export_to_csv,name="export-to-csv"),
     path('export_to_text/',export_to_text,name="export-to-text"),
+    path('download_text_file/',batch_text_download,name="download-text-file"),
 ]
