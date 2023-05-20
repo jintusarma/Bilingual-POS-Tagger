@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    #selectedItems {
+      border: 1px solid black;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    .selectedItem {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h3>Items:</h3>
+  <ul id="itemsList">
+    <li>
+      <div class="item">Item 1</div>
+      <select class="itemDropdown" onchange="addItemToList(this)">
+        <option value="">Select...</option>
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+      </select>
+    </li>
+    <li>
+      <div class="item">Item 2</div>
+      <select class="itemDropdown" onchange="addItemToList(this)">
+        <option value="">Select...</option>
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+      </select>
+    </li>
+    <li>
+      <div class="item hidden">Item 3</div>
+      <select class="itemDropdown" onchange="addItemToList(this)">
+        <option value="">Select...</option>
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+      </select>
+    </li>
+  </ul>
+
+  <h3>Selected Items:</h3>
+  <div id="selectedItems"></div>
+
+  <script>
+    function addItemToList(selectElement) {
+      var listItem = selectElement.parentNode;
+      var selectedOption = selectElement.options[selectElement.selectedIndex].text;
+      var selectedValue = selectElement.value;
+      var selectedItem = listItem.querySelector('.item');
+      var selectedItemsContainer = document.getElementById('selectedItems');
+
+      if (selectedValue !== '') {
+        var selectedDiv = document.createElement('div');
+        selectedDiv.classList.add('selectedItem');
+        selectedDiv.innerHTML = '<span class="selectedItemText">Item: ' + selectedItem.textContent + '</span>' +
+          '<span class="selectedItemOption">Option: ' + selectedOption + '</span>' +
+          '<span class="selectedItemValue">Value: ' + selectedValue + '</span>';
+
+        selectedItemsContainer.appendChild(selectedDiv);
+        listItem.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>

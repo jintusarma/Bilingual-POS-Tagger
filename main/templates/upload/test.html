@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    #selectedItems {
+      border: 1px solid black;
+      padding: 10px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h3>Items:</h3>
+  <ul id="itemsList">
+    <li>
+      Item 1
+      <select class="itemDropdown" onchange="addItemToList(this)">
+        <option value="">Select...</option>
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+      </select>
+    </li>
+    <li>
+      Item 2
+      <select class="itemDropdown" onchange="addItemToList(this)">
+        <option value="">Select...</option>
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+      </select>
+    </li>
+    <li>
+      Item 3
+      <select class="itemDropdown" onchange="addItemToList(this)">
+        <option value="">Select...</option>
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+      </select>
+    </li>
+  </ul>
+
+  <h3>Selected Items:</h3>
+  <div id="selectedItems"></div>
+
+  <script>
+    function addItemToList(selectElement) {
+      var listItem = selectElement.parentNode;
+      var selectedOption = selectElement.value;
+      var selectedOptionText = selectElement.options[selectElement.selectedIndex].text;
+      var selectedItemsContainer = document.getElementById('selectedItems');
+
+      if (selectedOption !== '') {
+        var selectedListItem = document.createElement('div');
+        selectedListItem.innerHTML = 'Selected Item: ' + listItem.firstChild.nodeValue.trim() + ' | Selected Option: ' + selectedOptionText;
+        selectedItemsContainer.appendChild(selectedListItem);
+        listItem.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
