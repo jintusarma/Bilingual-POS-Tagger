@@ -10,6 +10,17 @@ from django.http import HttpResponse
 from io import BytesIO
 # Create your views here.
 
+def main(request):
+    return render(request,"main.html")
+
+
+def home_assamese(request):
+    ver_list1 = check_verifier1()
+    ver_list2 = check_verifier2()
+    ver_list3 = check_verifier_admin()
+
+    return render(request,'index_assamese.html',{'ver1':ver_list1,'ver2':ver_list2,'admin':ver_list3}) 
+
 def home(request):
     # ver1 = Verifier.objects.filter(verifier_type = 'verfier_1')
     # ver2 = Verifier.objects.filter(verifier_type = 'verfier_2')
@@ -27,7 +38,7 @@ def home(request):
     # for x in ver3:
     #     ver_list3.append(x.verifier)
 
-    return render(request,'index.html',{'ver1':ver_list1,'ver2':ver_list2,'admin':ver_list3})
+    return render(request,'index_bodo.html',{'ver1':ver_list1,'ver2':ver_list2,'admin':ver_list3})
 
 
 def add_metadata(request):
@@ -57,22 +68,23 @@ def add_sentences(request):
             action = request.POST['action']
             metadata_id = request.POST['metadata']
             metadata = MetaData.objects.get(pk=metadata_id)
+            language = metadata.language
             if file:
                 for line in file:
                     text= line.decode('utf-8').strip()
                     if action == 'nontag':
-                        sentence = Dataset.objects.create(raw_sentence=text,metadata=metadata)
+                        if language == 'assamese':
+                            sentence = AssameseDataset.objects.create(raw_sentence=text,metadata=metadata,)
+                        elif language == 'bodo':
+                            sentence = BodoDataset.objects.create(raw_sentence=text,metadata=metadata,)
                     elif action == 'tag':
-                        raw_text = sentence_form(text)
-                        sentence = Dataset.objects.create(raw_sentence= raw_text,tagged_sentence=text,is_default_tagged=True,metadata=metadata)
-            # if action == 'nontag':
-            #     return HttpResponse("Non Tag")
-            # elif action == 'tag':
-            #     return HttpResponse("Tag ")
-            # if file:
-            #     for line in file:
-            #         text= line.decode('utf-8').strip()
-            #         sentence = Dataset.objects.create(raw_sentence=text)
+                        if language == 'assamese':
+                            raw_text = assamese_sentence_form(text)
+                            sentence = AssameseDataset.objects.create(raw_sentence= raw_text,tagged_sentence=text,is_default_tagged=True,metadata=metadata)
+                        elif language == 'bodo':
+                            raw_text = sentence_form(text)
+                            sentence = BodoDataset.objects.create(raw_sentence= raw_text,tagged_sentence=text,is_default_tagged=True,metadata=metadata)
+           
                 return render(request,"suceess.html")
         metadata = MetaData.objects.all()
         return render(request,"search.html",{'metadatas':metadata})
@@ -80,7 +92,7 @@ def add_sentences(request):
     return render(request,"404error.html",)
 
 
-def raw_sentences(request):
+def assamese_raw_sentences(request):
     # ver = Verifier.objects.filter(verifier_type = 'verfier_1')
     # ver_list =[]
 
@@ -90,8 +102,8 @@ def raw_sentences(request):
     ver_list = check_verifier1()
     
     if request.user in ver_list:
-        # obj = Dataset.objects.filter(is_tagged = False).order_by('?')
-        obj = Dataset.objects.filter(is_tagged = False,is_default_tagged=False)
+        # obj = BodoDataset.objects.filter(is_tagged = False).order_by('?')
+        obj = AssameseDataset.objects.filter(is_tagged = False,is_default_tagged=False)
         p = Paginator(obj,10)
         page = request.GET.get('page')
         venues = p.get_page(page)
@@ -99,13 +111,53 @@ def raw_sentences(request):
         
         if len(obj) == 0:
             return render(request,"clear.html")
-        return render(request,"validator1.html",{'outputs':obj,'venues':venues})
+        return render(request,"assamese/validator1.html",{'outputs':obj,'venues':venues,'language':'Assamese'})
     return render(request,"404error.html",)
+
+def bodo_raw_sentences(request):
+    # ver = Verifier.objects.filter(verifier_type = 'verfier_1')
+    # ver_list =[]
+
+    # for x in ver:
+    #     ver_list.append(x.verifier)
+
+    ver_list = check_verifier1()
+    
+    if request.user in ver_list:
+        # obj = BodoDataset.objects.filter(is_tagged = False).order_by('?')
+        obj = BodoDataset.objects.filter(is_tagged = False,is_default_tagged=False)
+        p = Paginator(obj,10)
+        page = request.GET.get('page')
+        venues = p.get_page(page)
+
+        
+        if len(obj) == 0:
+            return render(request,"clear.html")
+        return render(request,"validator1.html",{'outputs':obj,'venues':venues,'language':'Bodo'})
+    return render(request,"404error.html",)
+
 
 from django.db.models import Q
 
+def assamese_tagged_sentences(request):
 
-def tagged_sentences(request):
+    ver_list = check_verifier2()
+
+    if request.user in ver_list:
+        obj = AssameseDataset.objects.filter(Q(is_tagged=True) | Q(is_default_tagged=True) , Q(is_verified=False))
+        # obj = BodoDataset.objects.filter(is_verified = False, is_default_tagged=True)
+        p = Paginator(obj,10)
+        page = request.GET.get('page')
+        venues = p.get_page(page)
+
+        if len(obj) == 0:
+            return render(request,"clear.html")
+
+        return render(request,"assamese/validator2.html",{'outputs':obj,'venues':venues})
+    
+    return render(request,"404error.html",)
+
+def bodo_tagged_sentences(request):
     # store all verifer labeled as verifier 2 in ver
     # ver = Verifier.objects.filter(verifier_type = 'verfier_2')
 
@@ -123,8 +175,8 @@ def tagged_sentences(request):
     ver_list = check_verifier2()
 
     if request.user in ver_list:
-        obj = Dataset.objects.filter(Q(is_tagged=True) | Q(is_default_tagged=True) , Q(is_verified=False))
-        # obj = Dataset.objects.filter(is_verified = False, is_default_tagged=True)
+        obj = BodoDataset.objects.filter(Q(is_tagged=True) | Q(is_default_tagged=True) , Q(is_verified=False))
+        # obj = BodoDataset.objects.filter(is_verified = False, is_default_tagged=True)
         p = Paginator(obj,10)
         page = request.GET.get('page')
         venues = p.get_page(page)
@@ -137,49 +189,82 @@ def tagged_sentences(request):
     return render(request,"404error.html",)
 
 
-def view_raw_sentences(request,id):
+
+def view_assamese_raw_sentences(request,id):
     # ver_list = check_verifier1()
 
     # if request.user in ver_list:
-        all_data = Dataset.objects.get(pk=id)
+        all_data = AssameseDataset.objects.get(pk=id)
+        return render(request,'assamese/show_raw_sentence.html',{'sentence':all_data})
+    
+    # return render(request,"404error.html",)
+
+def view_bodo_raw_sentences(request,id):
+    # ver_list = check_verifier1()
+
+    # if request.user in ver_list:
+        all_data = BodoDataset.objects.get(pk=id)
         return render(request,'show_raw_sentence.html',{'sentence':all_data})
     
     # return render(request,"404error.html",)
 
 
-def view_tagged_sentences(request,id):
+def view_assamese_tagged_sentences(request,id):
     # ver_list = check_verifier2()
     # if request.user in ver_list:
     if request.method == "POST":
         text = request.POST['tag_sentence']
         action = request.POST.get('action')
         if action == 'verify':
-            obj=Dataset.objects.get(id=id)
+            obj=AssameseDataset.objects.get(id=id)
             obj.verified_sentence = text
             obj.is_verified = True
             obj.save()
-            return redirect(tagged_sentences)
+            return redirect(assamese_tagged_sentences)
         elif action == "edit":
-            ver = Dataset.objects.get(id=id)
+            ver = AssameseDataset.objects.get(id=id)
+            words = ver.raw_sentence.split()
+            tag_word = ver.tagged_sentence.split()
+            print(tag_word)
+            
+            return render(request,'assamese/update_verifier2.html',{'ver':ver,'words':words,'words_tag':tag_word})
+    all_data = AssameseDataset.objects.get(pk=id)
+    return render(request,'show_tagged_sentence.html',{'sentence':all_data})
+    # return render(request,"404error.html",)
+
+def view_bodo_tagged_sentences(request,id):
+    # ver_list = check_verifier2()
+    # if request.user in ver_list:
+    if request.method == "POST":
+        text = request.POST['tag_sentence']
+        action = request.POST.get('action')
+        if action == 'verify':
+            obj=BodoDataset.objects.get(id=id)
+            obj.verified_sentence = text
+            obj.is_verified = True
+            obj.save()
+            return redirect(bodo_tagged_sentences)
+        elif action == "edit":
+            ver = BodoDataset.objects.get(id=id)
             words = ver.raw_sentence.split()
             tag_word = ver.tagged_sentence.split()
             print(tag_word)
             
             return render(request,'update_verifier2.html',{'ver':ver,'words':words,'words_tag':tag_word})
         
-    all_data = Dataset.objects.get(pk=id)
+    all_data = BodoDataset.objects.get(pk=id)
     return render(request,'show_tagged_sentence.html',{'sentence':all_data})
     # return render(request,"404error.html",)
 
 
-def edit_raw_sentences(request,id):
+def edit_assamese_raw_sentences(request,id):
     # verifier_1 = Verifier.objects.filter(verifier_type = 'verfier_1')
     # ver_list =[]
 
     # for x in verifier_1:
     #     ver_list.append(x.verifier)
 
-    ver = Dataset.objects.get(id=id)
+    ver = AssameseDataset.objects.get(id=id)
     words = ver.raw_sentence.split()
 
     if request.method == 'POST':
@@ -199,20 +284,58 @@ def edit_raw_sentences(request,id):
         sentence = ' '.join(list_3)
         print(sentence)
 
-        obj=Dataset.objects.get(id=id)
+        obj=AssameseDataset.objects.get(id=id)
         obj.tagged_sentence=sentence
         obj.is_tagged=True
         obj.save()
-        all_data = Dataset.objects.get(pk=id)
-        return render(request,'Results/verifer1_result.html',{'sentence':all_data})
+        all_data = AssameseDataset.objects.get(pk=id)
+        return render(request,'Results/verifer1_result_assamese.html',{'sentence':all_data})
+
+        # test = sentence_test(text)
+    return render(request,'update_verifier1.html',{'ver':ver,'words':words})
+    # return render(request,"404error.html",)
+
+def edit_bodo_raw_sentences(request,id):
+    # verifier_1 = Verifier.objects.filter(verifier_type = 'verfier_1')
+    # ver_list =[]
+
+    # for x in verifier_1:
+    #     ver_list.append(x.verifier)
+
+    ver = BodoDataset.objects.get(id=id)
+    words = ver.raw_sentence.split()
+
+    if request.method == 'POST':
+    
+        selected_words = request.POST.getlist('word')
+        tags = request.POST.getlist('tag')
+        list_3 = []
+
+        for i in range(len(selected_words)):
+            item_1 = selected_words[i]
+            item_2 = tags[i].upper()
+            join_item =  item_1+ '\\' + item_2
+            # join_item =  item_1+ '<' + item_2 + ">"
+            list_3.append(join_item)
+        
+        print(list_3)
+        sentence = ' '.join(list_3)
+        print(sentence)
+
+        obj=BodoDataset.objects.get(id=id)
+        obj.tagged_sentence=sentence
+        obj.is_tagged=True
+        obj.save()
+        all_data = BodoDataset.objects.get(pk=id)
+        return render(request,'Results/verifer1_result_bodo.html',{'sentence':all_data})
 
         # test = sentence_test(text)
     return render(request,'update_verifier1.html',{'ver':ver,'words':words})
     # return render(request,"404error.html",)
 
 
-def edit_tagged_sentences(request,id):
-    ver = Dataset.objects.get(id=id)
+def edit_tagged_assamese_sentences(request,id):
+    ver = AssameseDataset.objects.get(id=id)
     words = ver.raw_sentence.split()
 
     if request.method == 'POST':
@@ -246,24 +369,87 @@ def edit_tagged_sentences(request,id):
         # sentence = sentence_form(sentence)
         # print(sentence)
 
-        obj=Dataset.objects.get(id=id)
+        obj=AssameseDataset.objects.get(id=id)
         obj.verified_sentence = sentence
         obj.is_verified = True
         obj.save()
         # return HttpResponse("Verify ")
-        all_data = Dataset.objects.get(pk=id)
-        return render(request,'Results/verifer2_result.html',{'sentence':all_data})
+        all_data = AssameseDataset.objects.get(pk=id)
+        return render(request,'Results/verifer2_result_assamese.html',{'sentence':all_data})
+
+        # test = sentence_test(text)
+    # return render(request,'update_verifier1.html',{'ver':ver,'words':words})
+    return HttpResponse("Fail ")
+
+def edit_tagged_bodo_sentences(request,id):
+    ver = BodoDataset.objects.get(id=id)
+    words = ver.raw_sentence.split()
+
+    if request.method == 'POST':
+    
+        selected_words = request.POST.getlist('word')
+        tags = request.POST.getlist('tag')
+      
+        # storing previously tagged word list in a new a new variable      
+        previous_tagged_sentence = ' '.join(selected_words)
+        # print("Tagged Data",previous_tagged_sentence)
+
+        # Untagging the sentence
+        untagging_sentence = sentence_form(previous_tagged_sentence)
+        # print("Untagged Data",untagging_sentence)
+        
+        # Store the untagged word in a list
+        selected_words = untagging_sentence.split()
+
+        list_3 = []
+
+        for i in range(len(selected_words)):
+            item_1 = selected_words[i]
+            item_2 = tags[i].upper()
+            join_item =  item_1+ '\\' + item_2
+            # join_item =  item_1+ '<' + item_2 + ">"
+            list_3.append(join_item)
+        
+        print(list_3)
+        sentence = ' '.join(list_3)
+        print(sentence)
+        # sentence = sentence_form(sentence)
+        # print(sentence)
+
+        obj=BodoDataset.objects.get(id=id)
+        obj.verified_sentence = sentence
+        obj.is_verified = True
+        obj.save()
+        # return HttpResponse("Verify ")
+        all_data = BodoDataset.objects.get(pk=id)
+        return render(request,'Results/verifer2_result_bodo.html',{'sentence':all_data})
 
         # test = sentence_test(text)
     # return render(request,'update_verifier1.html',{'ver':ver,'words':words})
     return HttpResponse("Fail ")
 
 
-def tagged_admin(request):
+def tagged_assamese_admin(request):
     ver_list = check_verifier2()
 
     if request.user in ver_list:
-        obj = Dataset.objects.filter(is_verified = False, is_default_tagged=True,is_tagged = False)
+        obj = AssameseDataset.objects.filter(is_verified = False, is_default_tagged=True,is_tagged = False)
+        p = Paginator(obj,10)
+        page = request.GET.get('page')
+        venues = p.get_page(page)
+
+        if len(obj) == 0:
+            return render(request,"clear.html")
+
+        return render(request,"assamese/validator2.html",{'outputs':obj,'venues':venues})
+    
+    return render(request,"404error.html",)
+
+def tagged_bodo_admin(request):
+    ver_list = check_verifier2()
+
+    if request.user in ver_list:
+        obj = BodoDataset.objects.filter(is_verified = False, is_default_tagged=True,is_tagged = False)
         p = Paginator(obj,10)
         page = request.GET.get('page')
         venues = p.get_page(page)
@@ -277,11 +463,27 @@ def tagged_admin(request):
 
 
 
-def tagged_user(request):
+def tagged_assamese_user(request):
     ver_list = check_verifier2()
 
     if request.user in ver_list:
-        obj = Dataset.objects.filter(is_verified = False, is_tagged=True)
+        obj = AssameseDataset.objects.filter(is_verified = False, is_tagged=True)
+        p = Paginator(obj,10)
+        page = request.GET.get('page')
+        venues = p.get_page(page)
+
+        if len(obj) == 0:
+            return render(request,"clear.html")
+
+        return render(request,"validator2.html",{'outputs':obj,'venues':venues})
+    
+    return render(request,"404error.html",)
+
+def tagged_bodo_user(request):
+    ver_list = check_verifier2()
+
+    if request.user in ver_list:
+        obj = BodoDataset.objects.filter(is_verified = False, is_tagged=True)
         p = Paginator(obj,10)
         page = request.GET.get('page')
         venues = p.get_page(page)
@@ -294,13 +496,22 @@ def tagged_user(request):
     return render(request,"404error.html",)
 
 
-def list_verified_sentences(request):
-    obj = Dataset.objects.filter(is_verified = True).order_by('?')
+def list_verified_assamese_sentences(request):
+    obj = AssameseDataset.objects.filter(is_verified = True).order_by('?')
     p = Paginator(obj,10)
     page = request.GET.get('page')
     venues = p.get_page(page)
     
     return render(request,"validator3.html",{'outputs':obj,'venues':venues})
+
+def list_verified_bodo_sentences(request):
+    obj = BodoDataset.objects.filter(is_verified = True).order_by('?')
+    p = Paginator(obj,10)
+    page = request.GET.get('page')
+    venues = p.get_page(page)
+    
+    return render(request,"validator3.html",{'outputs':obj,'venues':venues})
+
 
 def export_to_csv(request):
     response = HttpResponse(content_type='text/csv')
@@ -308,8 +519,8 @@ def export_to_csv(request):
 
     writer = csv.writer(response)
 
-    # import dataset model
-    sentences = Dataset.objects.filter(is_verified = True)
+    # import BodoDataset model
+    sentences = BodoDataset.objects.filter(is_verified = True)
 
     # add column headings
     writer.writerow(['Raw Sentences','Tagged Sentences'])
@@ -324,7 +535,7 @@ def export_to_text(request):
     # Create a BytesIO object to hold the zip file in memory
     buffer = BytesIO()
     
-    data = Dataset.objects.filter(is_verified = True)
+    data = BodoDataset.objects.filter(is_verified = True)
 
     file1 = ["Raw Sentences :\n"]
     
@@ -356,14 +567,19 @@ def export_to_text(request):
 
     return response
 
+
 def batch_text_download(request):
     if request.method == "POST":
         metadata_id = request.POST['metadata']
         metadata = MetaData.objects.get(pk=metadata_id)
-        print(metadata_id,metadata)
+        print(metadata_id,metadata.language)
         action = request.POST['action']
+        
+        if metadata.language == "assamese":
+            data = AssameseDataset.objects.filter(is_verified = True,metadata=metadata)
+        elif metadata.language == "bodo":
+            data = BodoDataset.objects.filter(is_verified = True,metadata=metadata)
 
-        data = Dataset.objects.filter(is_verified = True,metadata=metadata)
         if action == "text":
             # Create a BytesIO object to hold the zip file in memory
             buffer = BytesIO()
@@ -404,8 +620,8 @@ def batch_text_download(request):
 
             writer = csv.writer(response)
 
-            # import dataset model
-            # sentences = Dataset.objects.filter(is_verified = True)
+            # import BodoDataset model
+            # sentences = BodoDataset.objects.filter(is_verified = True)
 
             # add column headings
             writer.writerow(['Raw Sentences','Tagged Sentences'])

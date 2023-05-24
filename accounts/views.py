@@ -43,7 +43,7 @@ def verify(request,token):
         return HttpResponse("invalid token")
 
     
-def login_as(request):
+def login_as_bodo(request):
     if request.method == 'POST':
         email = request.POST['email']
         password1 = request.POST['password1']
@@ -55,7 +55,27 @@ def login_as(request):
             fname = email
             print(fname)
             # return render(request,'home.html',{'fname':fname})
-            return redirect('home')
+            return redirect('bodo-home')
+                    
+        else:
+            print("error")
+            messages.error(request,"Bad Credential")
+            return redirect('login')
+    return render(request,'login/login.html')
+
+def login_as_assamese(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        password1 = request.POST['password1']
+        # user = authenticate(username = email, password = password1)
+        user = authenticate(username=email,password=password1,)
+        print("user",user)
+        if user is not None:
+            login(request, user)
+            fname = email
+            print(fname)
+            # return render(request,'home.html',{'fname':fname})
+            return redirect('as-home')
                     
         else:
             print("error")
@@ -65,4 +85,4 @@ def login_as(request):
 
 def logout_as(request):
     logout(request)
-    return redirect('home')
+    return redirect('main')

@@ -64,3 +64,7 @@ def sentence_form(sentence):
         sentence = ' '.join(new_list2)
 
     return sentence
+
+def assamese_sentence_form(sentence):
+    clean_text = re.sub(r'\\[A-Z_]+', '', sentence)
+    return clean_text

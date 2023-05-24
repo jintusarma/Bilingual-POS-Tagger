@@ -16,7 +16,7 @@
             <!-- Logo -->
             <div class="text-indigo-500 md:order-1">
                 <!-- Heroicon - Chip Outline -->
-                <a href="{% url 'home' %}" class="flex items-center">
+                <a href="{% url 'main' %}" class="flex items-center">
                     <img src="{% static 'bodo.png'%}" class="h-6 mr-3 sm:h-9" alt="Landwind Logo" />
                     <span class="self-center text-xl font-semibold whitespace-nowrap text-gray-900">KHULUMBAI !</span>
                 </a>
@@ -24,7 +24,7 @@
             <div class="text-gray-900  order-3 w-full md:w-auto md:order-2">
                 <ul class="flex font-semibold justify-between">
                     
-                    <li class="md:px-4 md:py-2 hover:text-indigo-500"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="md:px-4 md:py-2 hover:text-indigo-500"><a href="{% url 'main' %}">Home</a></li>
                     {% comment %} <li class="md:px-4 md:py-2 hover:text-indigo-400"><a href="{% url 'search' %}">Search</a></li>
                     <li class="md:px-4 md:py-2 hover:text-indigo-400"><a href="{% url 'verifier1-list' %}">Verifier 1 List</a></li> {% endcomment %}
                     {% comment %} <li class="md:px-4 md:py-2 hover:text-indigo-400"><a href="#">Explore</a></li> {% endcomment %}
@@ -58,7 +58,7 @@
                     </center>
                     <!-- <div class="w-full sm:w-auto sm:ml-auto mt-3 sm:mt-0"></div>
                     </div> -->
-                    <form method="post" action="{% url 'edit-tagged-sentences' ver.id %}">
+                    <form method="post" action="{% url 'edit-tagged-bodo-sentences' ver.id %}">
                         {% csrf_token %}
                     <div class="mt-5">
                         <div class="form">
@@ -99,7 +99,7 @@
                                 <select name="tag"
                                     class="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 md:w-full"
                                     required="required" id="integration_city_id">
-                                    <option value="">TAGS</option>
+                                    {% comment %} <option value="">TAGS</option>
                                     <option value="nn">NOUN</option>
                                     <option value="nnp">PROPER NOUN</option>
                                     <option value="pr">PRONOUN</option>
@@ -112,9 +112,30 @@
                                     <option value="pr">Adverb</option>
                                     <option value="cc">Conjunction</option>
                                     <option value="psp">POSTPOSITION</option>
+                                    <option value="qt">Quantifiers</option> {% endcomment %}
+                                    
+                                    <option value="">TAGS</option>
+                                    <option value="nn">NOUN</option>
+                                    <option value="nnp">PROPER NOUN</option>
+                                    <option value="v">VERB</option>
+                                    <option value="pr">PRONOUN</option>
+                                    <option value="jj">ADJECTIVE</option>
+                                    <option value="rb">Adverb</option>
+                                    <option value="adp">Adposition</option>
+                                    <option value="psp">POSTPOSITION</option>
+                                    <option value="aux">Auxiliary Verb</option>
+                                    <option value="cc">Conjunction</option>
+                                    <option value="ccd">Coordinator</option>
+                                    <option value="ccs">Subordinator </option>
+                                    <option value="intj">Interjection </option>
+                                    <option value="det">Determiner  </option>
                                     <option value="qt">Quantifiers</option>
-                                    <!-- <option value="pr"></option>
-                                    <option value="pr"></option> -->
+                                    <option value="rpd">Particle</option>
+                                    <option value="punct">Punctuation </option>
+                                    <option value="sym">Symbol </option>
+                                    <option value="rd">Residuals  </option>
+                                    <option value="rdf">Foreign word   </option>
+                                    <option value="punc">Punctuation </option>
                                 </select>
                                 <p class="text-sm text-red-500 hidden mt-3" id="error">Please fill out this field.
                                 </p>
