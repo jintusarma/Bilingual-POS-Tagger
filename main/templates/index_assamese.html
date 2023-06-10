@@ -137,24 +137,49 @@
                                 class="block py-2 pl-3 pr-4 text-white bg-purple-700 rounded lg:bg-transparent lg:text-purple-700 lg:p-0 "
                                 aria-current="page">Home</a>
                         </li>
+                        
+                        {% if user in admin %}
+
                         <li>
-                            <a href="#about"
-                                class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 ">About
+                            <div class="dropdown">
+                                <button class="dropbtn block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 ">Admin Section</button>
+                                <div class="dropdown-content">
+                                  <a href="{% url 'add_tagset' %}" class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 ">Add Tagset</a>
+                                  <a href="{% url 'add_metadata' %}" class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 ">Add Metadata</a>
+                                  <a href="{% url 'add_sentences' %}" class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 ">Upload Sentences</a>
+                                  
+                                </div>
+                              </div>
+                        </li>
+                        
+                        {% comment %} <li>
+                            <a href="{% url 'add_tagset' %}"
+                                class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 ">Add Tagset
                                 </a>
-                            </li>
-                            {% if user in admin %}
+                        </li>
                         <li>
                             
                             <a href="{% url 'add_sentences' %}"
                                 class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 ">Upload Sentences</a>
-                        </li>
+                        </li> {% endcomment %}
                         {% else %}
+                        <li>
+                            <a href="#about"
+                                class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 ">About
+                                </a>
+                        </li>
                         <li>
                             <a href="#insights"
                                 class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 ">Insights</a>
                         </li>
                         {% endif %}
                         {% if user in ver1 %}
+                        <li>
+                            <a href="#service"
+                                class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 ">View & Download
+                            </a>
+                        </li>
+                        
                         <li>
 
                             {% comment %} <div class="dropdown">
@@ -292,15 +317,13 @@
         <div class="max-w-screen-xl px-4 py-8 mx-auto lg:py-24 lg:px-6">
             <div class="max-w-screen-md mx-auto mb-8 text-center lg:mb-12">
                 <h2 class="mb-4 text-3xl font-extrabold tracking-tight text-gray-900 ">Click the
-                    Subscribe button to
-                    use our Bodo POS Tagger application</h2>
-                <p class="mb-5 font-light text-gray-500 sm:text-xl ">Here you can paste your text or
-                    upload txt file from your computer and get the output !</p>
+                    button below to view and download the verified sentences</h2>
+                
             </div>
             <div class="flex flex-col justify-center items-center">
                 <a href="{% url 'verified-assamese-sentences' %}">
                     <button type="button"
-                    class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 ">Subscribe</button>
+                    class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 ">View & Download</button>
                 </a>
             </div>
 

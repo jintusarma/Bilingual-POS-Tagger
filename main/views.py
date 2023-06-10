@@ -48,10 +48,14 @@ def add_metadata(request):
             batch = request.POST['batch']
             domain = request.POST['domain']
             language = request.POST['language']
-            MetaData.objects.create(language=language,domain=domain,name=batch)
+            tagset_id = request.POST['tagset']
+            print("id ",tagset_id)
+            tagset = Tagset.objects.get(pk=tagset_id)
+            MetaData.objects.create(language=language,domain=domain,name=batch,tagset=tagset)
             return redirect(add_sentences)
-            
-        return render(request,"upload/metadata_upload.html")
+        
+        options = Tagset.objects.all()
+        return render(request,"upload/metadata_upload.html",{'options': options})
     return render(request,"404error.html",)
 
 
@@ -225,9 +229,18 @@ def view_assamese_tagged_sentences(request,id):
             ver = AssameseDataset.objects.get(id=id)
             words = ver.raw_sentence.split()
             tag_word = ver.tagged_sentence.split()
+            tagset = ver.metadata.tagset
+            # print(tagset)
+            tagset_names = tagset.tagset_description
+            tagset_names = tagset_names.split(' , ')
+            # print(tagset_names)
+            tagset_values = tagset.tagset_values
+            tagset_values = tagset_values.split(' , ')
+            # print(tagset_values)
+            tag_list = zip(tagset_values, tagset_names)
             print(tag_word)
             
-            return render(request,'assamese/update_verifier2.html',{'ver':ver,'words':words,'words_tag':tag_word})
+            return render(request,'assamese/update_verifier2.html',{'ver':ver,'words':words,'words_tag':tag_word,'tag_list':tag_list,'values': tagset_values,'names':tagset_names,})
     all_data = AssameseDataset.objects.get(pk=id)
     return render(request,'show_tagged_sentence.html',{'sentence':all_data})
     # return render(request,"404error.html",)
@@ -249,8 +262,16 @@ def view_bodo_tagged_sentences(request,id):
             words = ver.raw_sentence.split()
             tag_word = ver.tagged_sentence.split()
             print(tag_word)
-            
-            return render(request,'update_verifier2.html',{'ver':ver,'words':words,'words_tag':tag_word})
+            tagset = ver.metadata.tagset
+            # print(tagset)
+            tagset_names = tagset.tagset_description
+            tagset_names = tagset_names.split(' , ')
+            # print(tagset_names)
+            tagset_values = tagset.tagset_values
+            tagset_values = tagset_values.split(' , ')
+            # print(tagset_values)
+            tag_list = zip(tagset_values, tagset_names)
+            return render(request,'update_verifier2.html',{'ver':ver,'words':words,'words_tag':tag_word,'tag_list':tag_list,'values': tagset_values,'names':tagset_names,})
         
     all_data = BodoDataset.objects.get(pk=id)
     return render(request,'show_tagged_sentence.html',{'sentence':all_data})
@@ -266,6 +287,19 @@ def edit_assamese_raw_sentences(request,id):
 
     ver = AssameseDataset.objects.get(id=id)
     words = ver.raw_sentence.split()
+
+    # ver = Dataset.objects.get(id=id)
+    # words = ver.raw_sentence.split()
+
+    tagset = ver.metadata.tagset
+    # print(tagset)
+    tagset_names = tagset.tagset_description
+    tagset_names = tagset_names.split(' , ')
+    # print(tagset_names)
+    tagset_values = tagset.tagset_values
+    tagset_values = tagset_values.split(' , ')
+    # print(tagset_values)
+    tag_list = zip(tagset_values, tagset_names)
 
     if request.method == 'POST':
     
@@ -292,7 +326,7 @@ def edit_assamese_raw_sentences(request,id):
         return render(request,'Results/verifer1_result_assamese.html',{'sentence':all_data})
 
         # test = sentence_test(text)
-    return render(request,'update_verifier1.html',{'ver':ver,'words':words})
+    return render(request,'update_verifier1.html',{'ver':ver,'words':words,'tag_list':tag_list,'values': tagset_values,'names':tagset_names,})
     # return render(request,"404error.html",)
 
 def edit_bodo_raw_sentences(request,id):
@@ -304,6 +338,15 @@ def edit_bodo_raw_sentences(request,id):
 
     ver = BodoDataset.objects.get(id=id)
     words = ver.raw_sentence.split()
+    tagset = ver.metadata.tagset
+    # print(tagset)
+    tagset_names = tagset.tagset_description
+    tagset_names = tagset_names.split(' , ')
+    # print(tagset_names)
+    tagset_values = tagset.tagset_values
+    tagset_values = tagset_values.split(' , ')
+    # print(tagset_values)
+    tag_list = zip(tagset_values, tagset_names)
 
     if request.method == 'POST':
     
@@ -330,13 +373,22 @@ def edit_bodo_raw_sentences(request,id):
         return render(request,'Results/verifer1_result_bodo.html',{'sentence':all_data})
 
         # test = sentence_test(text)
-    return render(request,'update_verifier1.html',{'ver':ver,'words':words})
+    return render(request,'update_verifier1.html',{'ver':ver,'words':words,'tag_list':tag_list,'values': tagset_values,'names':tagset_names,})
     # return render(request,"404error.html",)
 
 
 def edit_tagged_assamese_sentences(request,id):
     ver = AssameseDataset.objects.get(id=id)
     words = ver.raw_sentence.split()
+    tagset = ver.metadata.tagset
+    # print(tagset)
+    tagset_names = tagset.tagset_description
+    tagset_names = tagset_names.split(' , ')
+    # print(tagset_names)
+    tagset_values = tagset.tagset_values
+    tagset_values = tagset_values.split(' , ')
+    # print(tagset_values)
+    tag_list = zip(tagset_values, tagset_names)
 
     if request.method == 'POST':
     
@@ -384,6 +436,15 @@ def edit_tagged_assamese_sentences(request,id):
 def edit_tagged_bodo_sentences(request,id):
     ver = BodoDataset.objects.get(id=id)
     words = ver.raw_sentence.split()
+    tagset = ver.metadata.tagset
+    # print(tagset)
+    tagset_names = tagset.tagset_description
+    tagset_names = tagset_names.split(' , ')
+    # print(tagset_names)
+    tagset_values = tagset.tagset_values
+    tagset_values = tagset_values.split(' , ')
+    # print(tagset_values)
+    tag_list = zip(tagset_values, tagset_names)
 
     if request.method == 'POST':
     

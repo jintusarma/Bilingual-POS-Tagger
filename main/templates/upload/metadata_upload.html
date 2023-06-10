@@ -86,6 +86,19 @@
                 <option value="bodo">Bodo</option>
             </select>
         </div>
+        <div class="mb-12 flex items-center flex-col">
+            <p class=" mb-4">Tagset of the Batch</p>
+            <select name="tagset" id="" class="block bg-gray-50 w-1/2 py-4 px-4 border border-gray-700 shadow-sm rounded-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500">
+                {% comment %} <option value="assamese" class="block bg-gray-50 w-1/2 py-4 px-4 border border-gray-700 shadow-sm rounded-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500">Assamese</option>
+                <option value="bodo">Bodo</option> {% endcomment %}
+       
+            {% for option in options %}
+            <option value="{{option.pk}}">{{ option }}</option>
+            {% endfor %}
+        
+            </select>
+        </div>
+        
            
 
             

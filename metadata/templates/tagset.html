@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% load static %}
+</head>
+<body class="text-gray-900 bg-gradient-to-r from-rose-100 to-teal-100  ">
+    <nav class="bg-gray-200 shadow shadow-gray-300 w-100 px-8 md:px-auto" style="background-color: #d9e4ec; position: sticky; top: 0;">
+        <div class="md:h-16 h-28 mx-auto md:px-4 container flex items-center justify-between flex-wrap md:flex-nowrap">
+            <!-- Logo -->
+            <div class="text-indigo-500 md:order-1">
+                <!-- Heroicon - Chip Outline -->
+                <a href="{% url 'main' %}" class="flex items-center">
+                    <img src="{% static 'bodo.png'%}" class="h-6 mr-3 sm:h-9" alt="Landwind Logo" />
+                    <span class="self-center text-xl font-semibold whitespace-nowrap text-gray-900">Welcome !</span>
+                </a>
+            </div>
+            <div class="text-gray-900 order-3 w-full md:w-auto md:order-2">
+                <ul class="flex font-semibold justify-between">
+                    <h1 class="text-2xl sm:text-4xl mb-8 flex justify-center my-6 text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ">POS Tagger</h1>
+                    
+                    
+                </ul>
+            </div>
+            <div class="order-2 md:order-3">
+                <button class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-gray-50 rounded-xl flex items-center gap-2">
+                    <!-- Heroicons - Login Solid -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <a href="{% url 'logout' %}">Log Out</a>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="flex justify-center mt-6 underline underline-offset-2">
+        <h1 class="text-xl md:text-2xl">Add Tagset</h1>
+    </div>
+    
+    <div class="border border-gray-700 rounded-xl mx-16 py-6 mt-8 bg-gradient-to-r from-gray-100 to-gray-200">
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+
+        <div  id="file" class="mb-6 flex items-center flex-col">
+            <p class="mt-6 mb-4">Name of the Tagset</p>
+            <label for="files" class="sr-only bg-indigo-600 border border-gray-700">Choose file</label>
+            <input type="text" name="name" class="block bg-gray-50 w-1/2 py-4 px-4 border border-gray-700 shadow-sm rounded-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500" required>
+        </div>
+
+        <div  id="file" class="mb-12 flex items-center flex-col">
+            <p class="mt-6 mb-4">Upload Tagset ( Seperate name and tag by ' - ')</p>
+            <label for="files" class="sr-only bg-indigo-600 border border-gray-700">Choose file</label>
+            <input type="file" name="tag_name" id="files" class="block bg-gray-50 w-1/2 border border-gray-700 shadow-sm rounded-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500
+              file:bg-transparent file:border-0
+              file:bg-gray-100 file:mr-4
+              file:py-3 file:px-4" required>
+              <a href="{% static 'tagsets/sample_tagset.txt' %}" download class="text-blue-700 hover:text-blue-900">Click here to download a sample file</a>
+          </div>
+        
+        {% comment %} <div  id="file" class="mb-8 flex items-center flex-col">
+            <p class="mt-6 mb-4">Upload Tagset ( Seperate name and tag by ' - ')</p>
+            <label for="files" class="sr-only bg-indigo-600 border border-gray-700">Choose file</label>
+            <input type="file" name="tag_name" class="block bg-gray-50 w-1/2 py-4 px-4 border border-gray-700 shadow-sm rounded-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500" required>
+            <a href="{% static 'tagsets/sample_tagset.txt' %}" download class="text-blue-700 hover:text-blue-900">Click here to download a sample file</a>
+        </div> {% endcomment %}
+
+        
+        
+           
+
+            
+
+          <div class="flex justify-center mb-6">
+              <button class="bg-gray-50 hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border-2 border-green-500 hover:border-transparent rounded w-1/3 " type="submit">Submit</button>
+          </div>
+    </form>
+    {% comment %} <a class="flex justify-center my-8" href="{% url 'add_sentences' %}"><button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Upload Sentences</button></a> {% endcomment %}
+    <div class="flex justify-center">
+        <div class="flex justify-evenly w-80">
+            
+            <a class="flex justify-center my-8" href="{% url 'add_metadata' %}"><button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Add Metadata</button></a>
+            <a class="flex justify-center my-8" href="{% url 'add_sentences' %}"><button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Add Sentences</button></a>
+        </div>
+    </div>
+
+    </div>
+
+</body>
+
+
+
+
+
+</html>

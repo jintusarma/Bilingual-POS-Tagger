@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verifier 1 Update</title>
     {% load static %}
+    {% load custom_filters %}
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -45,7 +46,7 @@
     </nav>
 
     <div class="relative min-h-screen flex items-center justify-center bg-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 bg-gray-500 bg-no-repeat bg-cover relative items-center"
-        style="background-image: url({% static 'bodo.png' %});">
+        style="background-image: url({% static 'files/bg_edit.jpg' %});">
         <div class="absolute bg-black opacity-60 inset-0 z-0"></div>
         <!-- <div class="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg z-10"> -->
         <div class=" w-2/5 space-y-8 p-10 bg-white rounded-xl shadow-lg z-10">
@@ -99,43 +100,13 @@
                                 <select name="tag"
                                     class="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 md:w-full"
                                     required="required" id="integration_city_id">
-                                    {% comment %} <option value="">TAGS</option>
-                                    <option value="nn">NOUN</option>
-                                    <option value="nnp">PROPER NOUN</option>
-                                    <option value="pr">PRONOUN</option>
-                                    <option value="prp">PERSONAL PRONOUN</option>
-                                    <option value="prf">REFLEXIVE PRONOUN</option>
-                                    <option value="prl">RELATIVE PRONOUN</option>
-                                    <option value="dm">Demonstrative</option>
-                                    <option value="v">VERB</option>
-                                    <option value="jj">ADJECTIVE</option>
-                                    <option value="pr">Adverb</option>
-                                    <option value="cc">Conjunction</option>
-                                    <option value="psp">POSTPOSITION</option>
-                                    <option value="qt">Quantifiers</option> {% endcomment %}
-                                    
-                                    <option value="">TAGS</option>
-                                    <option value="nn">NOUN</option>
-                                    <option value="nnp">PROPER NOUN</option>
-                                    <option value="v">VERB</option>
-                                    <option value="pr">PRONOUN</option>
-                                    <option value="jj">ADJECTIVE</option>
-                                    <option value="rb">Adverb</option>
-                                    <option value="adp">Adposition</option>
-                                    <option value="psp">POSTPOSITION</option>
-                                    <option value="aux">Auxiliary Verb</option>
-                                    <option value="cc">Conjunction</option>
-                                    <option value="ccd">Coordinator</option>
-                                    <option value="ccs">Subordinator </option>
-                                    <option value="intj">Interjection </option>
-                                    <option value="det">Determiner  </option>
-                                    <option value="qt">Quantifiers</option>
-                                    <option value="rpd">Particle</option>
-                                    <option value="punct">Punctuation </option>
-                                    <option value="sym">Symbol </option>
-                                    <option value="rd">Residuals  </option>
-                                    <option value="rdf">Foreign word   </option>
-                                    <option value="punc">Punctuation </option>
+                                        {% comment %} <option value="">TAGS</option> {% endcomment %}
+                                        {% with values_names=values|zip_lists:names %}
+                                        {% for value, name in values_names %}
+                                            <option value="{{ value }}">{{ name }}</option>
+                                        {% endfor %}
+                                    {% endwith %}
+                                   
                                 </select>
                                 <p class="text-sm text-red-500 hidden mt-3" id="error">Please fill out this field.
                                 </p>

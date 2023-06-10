@@ -1,14 +1,24 @@
 from django.db import models
 from django.contrib.auth.models import User
 from accounts.models import Verifier
+from django.contrib.postgres.fields import ArrayField
 # from .models import MetaData
 
 # Create your models here.
 
+class Tagset(models.Model):
+    tagset_name = models.CharField("Name of the Tagset", max_length=1000,blank=True, null=True)
+    tagset_description = models.CharField(max_length=1000,blank=True, null=True)
+    tagset_values = models.CharField(max_length=1000,blank=True, null=True)
+
+    def __str__(self):
+        return self.tagset_name
+
 class MetaData(models.Model):
     language = models.CharField(max_length=1000,blank=True, null=True)
     domain = models.CharField(max_length=1000,blank=True, null=True)
-    name = models.CharField("Name of the Batch",max_length=1000,blank=True, null=True)    
+    name = models.CharField("Name of the Batch",max_length=1000,blank=True, null=True)  
+    tagset = models.ForeignKey(Tagset, on_delete=models.CASCADE,blank=True, null=True) 
 
     def __str__(self):
         return self.name

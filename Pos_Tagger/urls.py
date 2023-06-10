@@ -21,6 +21,7 @@ urlpatterns = [
     path('',include('main.urls')),
     path('admin/', admin.site.urls),
     path('accounts/',include('accounts.urls')),
+    path('tagset_upload/',include('metadata.urls')),
 ]
 
 # configure admin title
