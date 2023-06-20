@@ -82,8 +82,8 @@
                             <p class="w-8/12">List of Words with Tags</p>
                             <p class="w-4/12">List of Tags</p>
                         </div>
-                        
-                        {% for word in words_tag %}
+                        {% with all_words=words_tag|zip_lists:words  %}
+                        {% for word_t,word_nt in all_words %}
                         <div class="md:flex md:flex-row md:space-x-4 w-full text-xs items-center">
                             <div class="w-full flex flex-col mb-3">
                                 
@@ -91,15 +91,16 @@
                                     class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4"
                                     type="text" name="text" > {% endcomment %}
                                     <div class="flex " >
-                                        <input type="text" name="word" value="{{ word }}" class="hidden" required> 
-                                        <p class="ml-4">{{ word }}</p> 
+                                        <input type="text" name="word" value="{{ word_t }}" class="hidden" required> 
+                                        <p class="ml-4">{{ word_t }}</p> 
+                                        <p class="item ml-4 hidden">{{ word_nt }}</p> 
                                     </div>
                             </div>
                             <div class="w-full flex flex-col mb-3">
                                 
                                 <select name="tag"
                                     class="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 md:w-full"
-                                    required="required" id="integration_city_id">
+                                    required="required" id="integration_city_id" onchange="addItemToList(this)">
                                     <option value="">TAGS</option>
                                     {% with values_names=values|zip_lists:names %}
                                         {% for value, name in values_names %}
@@ -115,7 +116,11 @@
                         </div>
 
                         {% endfor %}
-
+                        {% endwith %}
+                        <h3>Selected Items:</h3>
+                        <div class="border border-2 border-gray-900 px-4 py-4">
+                            <div id="selectedItems"></div>
+                        </div>
                         
                         <div class="mt-5 text-right md:space-x-3 md:block flex flex-col-reverse">
 
@@ -128,7 +133,28 @@
             </div>
         </div>
     </div>
-
+    <script>
+        function addItemToList(selectElement) {
+          var listItem = selectElement.parentNode;
+          var xyz = listItem.parentNode;
+          var selectedOption = selectElement.options[selectElement.selectedIndex].text;
+          var selectedValue = selectElement.value;
+          var selectedItem = xyz.querySelector('.item');
+          var selectedItemsContainer = document.getElementById('selectedItems');
+    
+          if (selectedValue !== '') {
+            var selectedDiv = document.createElement('span');
+            selectedDiv.classList.add('selectedItem');
+            selectedDiv.innerHTML = selectedItem.textContent + '</span>' +
+              '<span class="selectedItemValue">\\' + selectedValue + '  </span>';
+    
+            selectedItemsContainer.appendChild(selectedDiv);
+            listItem.style.display = 'none';
+            xyz.style.display = 'none';
+            
+          }
+        }
+      </script>
 </body>
 
 </html>

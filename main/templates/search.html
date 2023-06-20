@@ -15,7 +15,7 @@
             <div class="text-indigo-500 md:order-1">
                 <!-- Heroicon - Chip Outline -->
                 <a href="{% url 'main' %}" class="flex items-center">
-                    <img src="{% static 'bodo.png'%}" class="h-6 mr-3 sm:h-9" alt="Landwind Logo" />
+                    <img src="{% static 'files/assam-map.jpg'%}" class="h-6 mr-3 sm:h-9" alt="Landwind Logo" />
                     <span class="self-center text-xl font-semibold whitespace-nowrap text-gray-900">WELCOME !</span>
                 </a>
             </div>
@@ -64,14 +64,19 @@
               file:bg-transparent file:border-0
               file:bg-gray-100 file:mr-4
               file:py-3 file:px-4" required>
-          </div>
-            <div class="flex justify-center mb-8">
-                <div class="flex flex-row flex-wrap w-96  justify-evenly">
-                    <p><input type="radio" name="action" value="nontag" id="" required>Non Tagged File</p>
-                    <p><input type="radio" name="action" value="tag" id="" required>Tagged File</p>
-                </div>
             </div>
+
+            <!-- <div class="border border-gray-700"> -->
+                <center><p class="mt-6 mb-4">Select the type of dataset</p></center>
+                <div class="flex justify-center mb-8">
+                    <div class="flex flex-row flex-wrap w-96  justify-evenly border border-gray-700 py-4 bg-gray-50 rounded-md">
+                        <p><input type="radio" name="action" value="nontag" id="" required>Non Tagged File</p>
+                        <p><input type="radio" name="action" value="tag" id="" required>Tagged File</p>
+                    </div>
+                </div>
+            <!-- </div> -->
             
+            <center><p class="mt-6 mb-4">Metadata for the dataset</p></center>
             <div class="flex justify-center mb-6">
                 <select name="metadata" id="" class="px-6 py-2 rounded-xl" required>
                     {% for metadata in metadatas %}

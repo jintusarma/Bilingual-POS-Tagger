@@ -229,6 +229,9 @@ def view_assamese_tagged_sentences(request,id):
             ver = AssameseDataset.objects.get(id=id)
             words = ver.raw_sentence.split()
             tag_word = ver.tagged_sentence.split()
+            
+            all_words = zip(tag_word,words)
+
             tagset = ver.metadata.tagset
             # print(tagset)
             tagset_names = tagset.tagset_description
@@ -239,8 +242,12 @@ def view_assamese_tagged_sentences(request,id):
             # print(tagset_values)
             tag_list = zip(tagset_values, tagset_names)
             print(tag_word)
+            data = {
+                'ver':ver,'words':words,'words_tag':tag_word,
+                'values': tagset_values,'names':tagset_names
+            }
             
-            return render(request,'assamese/update_verifier2.html',{'ver':ver,'words':words,'words_tag':tag_word,'tag_list':tag_list,'values': tagset_values,'names':tagset_names,})
+            return render(request,'assamese/update_verifier2.html',data)
     all_data = AssameseDataset.objects.get(pk=id)
     return render(request,'show_tagged_sentence.html',{'sentence':all_data})
     # return render(request,"404error.html",)
